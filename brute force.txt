@@ -1,0 +1,64 @@
+#include <iostream>
+#include <vector>
+#include <map>
+using namespace std;
+int main()
+{
+    ios_base :: sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+    int n_Task = 0;
+    int n_Mach = 0;
+    cin >> n_Task;
+    cin >> n_Mach;
+    int sum_loop = n_Mach;
+    for( int i = 1; i < n_Task; i ++ )
+        sum_loop *= n_Mach;
+    vector<int> Task_Data (n_Task,0);
+    for( auto& ele : Task_Data )
+        cin >> ele;
+    vector<int> Result (n_Task,0);
+    vector<int> Currently (n_Task,0);
+    int Min_Time = 0;
+    for( int i = 0; i < n_Task; i ++ )
+        Min_Time += Task_Data[i];
+    Currently[0] ++;
+    while ( sum_loop > 0 )
+    {
+        bool skip = 0;
+        for( int i = 0; i < n_Task; i ++ )
+            if( Currently[i] == n_Mach )
+            {
+                Currently[i] = 0;
+                Currently[i+1] ++;
+                skip = 1;
+                break;
+            }
+        if( skip == 1 )
+            sum_loop ++;
+        else
+        {
+            int Max_Time_local = 0;
+            for( int i = 0 ; i < n_Mach; i ++ )
+            {
+                int Time = 0;
+                for( int j = 0; j < n_Task; j ++ )
+                    if( i == Currently[j] )
+                        Time += Task_Data[j];
+                if( Max_Time_local < Time )
+                    Max_Time_local = Time;
+            }
+            if( Max_Time_local < Min_Time )
+            {
+                Min_Time = Max_Time_local;
+                for( int i = 0; i < n_Task; i ++ )
+                    Result[i] = Currently[i];
+            }
+            Currently[0] ++;
+            sum_loop -= 2;
+        }
+    }
+    for( int i = 0; i < n_Task; i ++ )
+        cout << Result[i] << " ";
+    return 0;
+}
